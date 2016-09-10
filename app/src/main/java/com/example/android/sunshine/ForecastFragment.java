@@ -1,32 +1,27 @@
 package com.example.android.sunshine;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.speech.tts.Voice;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.widget.ListViewAutoScrollHelper;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.Menu;
 
-import java.net.URI;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.IOException;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -104,7 +99,7 @@ public class ForecastFragment extends Fragment {
                 final int numdays =7;
                 final String appid_param = "APPID";
 
-                Uri fecthweather = Uri.parse(BASE_URL)
+                Uri fetchweather = Uri.parse(BASE_URL)
                         .buildUpon()
                         .appendQueryParameter(query_param, params[0])
                         .appendQueryParameter(format_param, "json")
@@ -113,7 +108,8 @@ public class ForecastFragment extends Fragment {
                         .appendQueryParameter(appid_param,BuildConfig.OPEN_WEATHER_MAP_API_KEY.toString())
                         .build();
 
-                URL url = new URL(fecthweather.toString());
+                URL url = new URL(fetchweather.toString());
+                Log.v(LOG_TAG, "Built URI " + fetchweather.toString());
 
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -143,7 +139,7 @@ public class ForecastFragment extends Fragment {
                 forecastJsonStr = buffer.toString();
                 Log.v(LOG_TAG, "Forecast JSON String:" + forecastJsonStr);
             } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
+                Log.e(LOG_TAG, "Error", e);
                 // If the code didn't successfully get the weather data, there's no point in attempting
                 // to parse it.
                 forecastJsonStr = null;
